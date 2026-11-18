@@ -39,5 +39,37 @@
 </svg><span>Sent</span></button>
 <p id="status" class="status" aria-live="polite">Preview interface — no information is sent or stored.</p>
 </section></main>
-<script src="script.js"></script>
-</body></html>
+
+<script>
+const API_URL = "https://bookish-chainsaw-6pj5jp6vr6j25vx4-8000.app.github.dev";
+
+const button = document.getElementById("sendBtn");
+const status = document.getElementById("status");
+const shape = button.querySelector("path");
+
+button.addEventListener("click", async () => {
+    button.disabled = true;
+    status.textContent = "Connecting to HiDE server...";
+
+    try {
+        const response = await fetch(API_URL + "/health");
+        if (!response.ok) throw new Error("Server error");
+
+        const data = await response.json();
+        if (data.status !== "online") throw new Error("Server offline");
+
+        shape.setAttribute("fill", "#16a34a");
+        status.textContent = "Server connected successfully.";
+
+    } catch (error) {
+        shape.setAttribute("fill", "#dc2626");
+        status.textContent = "Connection failed: " + error.message;
+        console.error(error);
+
+    } finally {
+        button.disabled = false;
+    }
+});
+</script>
+</body>
+</html>
