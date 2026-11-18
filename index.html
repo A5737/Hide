@@ -49,30 +49,26 @@ const shape = button.querySelector("path");
 
 button.addEventListener("click", async () => {
     button.disabled = true;
-    status.textContent = "Connecting to HiDE server...";
+    status.textContent = "Connecting...";
 
     try {
         const response = await fetch(API_URL + "/health");
-        if (!response.ok) throw new Error("Server error");
 
-        const data = await response.json();
-        console.log("Server response:", data);
+        if (!response.ok) {
+            throw new Error("HTTP " + response.status);
+        }
 
-status.textContent = "Server says: " + JSON.stringify(data);
+        const result = await response.text();
 
-if (data.status !== "online") {
-    throw new Error("Unexpected server response");
-}
-
-shape.setAttribute("fill", "#16a34a");
+        console.log("Server response:", result);
 
         shape.setAttribute("fill", "#16a34a");
-        status.textContent = "Server connected successfully.";
+        status.textContent = "HiDE server connected!";
 
     } catch (error) {
+        console.error(error);
         shape.setAttribute("fill", "#dc2626");
         status.textContent = "Connection failed: " + error.message;
-        console.error(error);
 
     } finally {
         button.disabled = false;
