@@ -56,7 +56,15 @@ button.addEventListener("click", async () => {
         if (!response.ok) throw new Error("Server error");
 
         const data = await response.json();
-        if (data.status !== "online") throw new Error("Server offline");
+        console.log("Server response:", data);
+
+status.textContent = "Server says: " + JSON.stringify(data);
+
+if (data.status !== "online") {
+    throw new Error("Unexpected server response");
+}
+
+shape.setAttribute("fill", "#16a34a");
 
         shape.setAttribute("fill", "#16a34a");
         status.textContent = "Server connected successfully.";
